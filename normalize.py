@@ -13,5 +13,5 @@ for cyr_symb, letter in zip(CYRILLIC_SYMBOLS, TRANSLATION):
 
 def normalize(name: str) -> str:
     transl_name = name.translate(TRANS)
-    transl_name = re.sub(r"\W", "_", transl_name)
+    transl_name = re.sub(r"[^a-zA-Z0-9_\.]", "_", transl_name)
     return transl_name

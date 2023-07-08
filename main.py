@@ -1,6 +1,6 @@
 from pathlib import Path
-import shutil
-import sys
+import shutil, sys
+
 import file_parser as parser
 from normalize import normalize
 
@@ -17,14 +17,26 @@ def handle_other(filename: Path, target_folder: Path) -> None:
 
 def handle_archive(filename: Path, target_folder: Path) -> None:
     target_folder.mkdir(exist_ok=True, parents=True)  # робимо папку для архіва
+    # filename.replace(target_folder / normalize(filename.name))
     folder_for_file = target_folder / normalize(filename.name.replace(filename.suffix, ""))
     folder_for_file.mkdir(exist_ok=True, parents=True)
+    
     try:
-        shutil.unpack_archive(filename, folder_for_file)  # TODO: Check!
+        if filename.suffix[1:].casefold() == "gztar":
+            shutil.unpack_archive(filename, folder_for_file, "gztar")  # TODO: Check!
+        elif filename.suffix[1:].casefold() == "tar":
+            shutil.unpack_archive(filename, folder_for_file, "tar")
+        else:
+            shutil.unpack_archive(filename, folder_for_file, "zip")
+        
+        filename.unlink()        
+    
     except shutil.ReadError:
-        print(f"File {filename} is not archive")
+        print(f"File {filename} is not archive!")
+        filename.replace(target_folder / normalize(filename.name))
         folder_for_file.rmdir()
-    filename.unlink()
+
+    # filename.unlink()
 
 
 def handle_folder(folder: Path):
@@ -60,8 +72,8 @@ def main(folder: Path):
         handle_defined(file, folder / "audio" / "MP3")
     for file in parser.OGG_AUDIO:
         handle_defined(file, folder / "audio" / "OGG")
-    for file in parser.MP3_AUDIO:
-        handle_defined(file, folder / "audio" / "MP3")
+    for file in parser.WAV_AUDIO:
+        handle_defined(file, folder / "audio" / "WAV")
 
     for file in parser.DOC_DOCUMENTS:
         handle_defined(file, folder / "documents" / "DOC")
@@ -78,7 +90,7 @@ def main(folder: Path):
     for file in parser.XLSX_DOCUMENTS:
         handle_defined(file, folder / "documents" / "XLSX")
 
-    for file in parser.GZ_ARCHIVES:
+    for file in parser.GZTAR_ARCHIVES:
         handle_archive(file, folder / "archives")
     for file in parser.TAR_ARCHIVES:
         handle_archive(file, folder / "archives")
