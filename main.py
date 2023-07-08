@@ -22,7 +22,7 @@ def handle_archive(filename: Path, target_folder: Path) -> None:
     folder_for_file.mkdir(exist_ok=True, parents=True)
     
     try:
-        if filename.suffix[1:].casefold() == "gztar":
+        if filename.suffix[1:].casefold() == "gz":
             shutil.unpack_archive(filename, folder_for_file, "gztar")  # TODO: Check!
         elif filename.suffix[1:].casefold() == "tar":
             shutil.unpack_archive(filename, folder_for_file, "tar")
