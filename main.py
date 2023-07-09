@@ -46,7 +46,7 @@ def handle_folder(folder: Path):
         print(f"Can\'t delete folder: {folder}")
 
 
-def main(folder: Path):
+def files_runner(folder: Path):
     parser.scan_and_transfer(folder)
     for file in parser.JPEG_IMAGES:
         handle_defined(file, folder / "images" / "JPEG")
@@ -105,8 +105,15 @@ def main(folder: Path):
         handle_folder(folder)
 
 
-if __name__ == "__main__":
-    if sys.argv[1]:
+def main():
+    if len(sys.argv) != 2:
+        print("The first argument of the script -\nis the name of directory,\nwhich we need to make a order.")
+        quit()
+    else:
         folder_for_scan = Path(sys.argv[1])
         print(f"Start in folder: {folder_for_scan.resolve()}")
-        main(folder_for_scan.resolve())
+        files_runner(folder_for_scan.resolve())
+
+
+if __name__ == "__main__":
+    main()
