@@ -1,10 +1,5 @@
 from pathlib import Path
-import re, shutil, sys
-# import sys
-# from pathlib import Path
-
-# import file_parser as parser
-# from normalize import normalize
+import re, shutil
 
 
 # Section of Normalize
@@ -26,6 +21,7 @@ def normalize(name: str) -> str:
 
 
 # Section of Parser
+GIF_IMAGES = []
 JPEG_IMAGES = []
 JPG_IMAGES = []
 PNG_IMAGES = []
@@ -55,7 +51,7 @@ ZIP_ARCHIVES = []
 
 MY_OTHER = []
 
-REGISTER_EXTENSION = { "JPEG": JPEG_IMAGES, "JPG": JPG_IMAGES, "PNG": PNG_IMAGES, "SVG": SVG_IMAGES,
+REGISTER_EXTENSION = { "GIF": GIF_IMAGES, "JPEG": JPEG_IMAGES, "JPG": JPG_IMAGES, "PNG": PNG_IMAGES, "SVG": SVG_IMAGES,
                        "AVI": AVI_VIDEO, "MKV": MKV_VIDEO,"MOV": MOV_VIDEO, "MP4": MP4_VIDEO,
                        "AMR": AMR_AUDIO, "MP3": MP3_AUDIO,"OGG": OGG_AUDIO, "WAV": WAV_AUDIO,
                        "DOC": DOC_DOCUMENTS, "DOCX": DOCX_DOCUMENTS,"PDF": PDF_DOCUMENTS, "PPTX": PPTX_DOCUMENTS,
@@ -139,61 +135,63 @@ def handle_folder(folder: Path):
 
 
 def files_runner(folder: Path):
-    parser.scan_and_transfer(folder)
-    for file in parser.JPEG_IMAGES:
+    scan_and_transfer(folder)
+    for file in GIF_IMAGES:
+        handle_defined(file, folder / "images" / "GIF")
+    for file in JPEG_IMAGES:
         handle_defined(file, folder / "images" / "JPEG")
-    for file in parser.JPG_IMAGES:
+    for file in JPG_IMAGES:
         handle_defined(file, folder / "images" / "JPG")
-    for file in parser.PNG_IMAGES:
+    for file in PNG_IMAGES:
         handle_defined(file, folder / "images" / "PNG")
-    for file in parser.SVG_IMAGES:
+    for file in SVG_IMAGES:
         handle_defined(file, folder / "images" / "SVG")
         
-    for file in parser.AVI_VIDEO:
+    for file in AVI_VIDEO:
         handle_defined(file, folder / "video" / "AVI")
-    for file in parser.MKV_VIDEO:
+    for file in MKV_VIDEO:
         handle_defined(file, folder / "video" / "MKV")
-    for file in parser.MOV_VIDEO:
+    for file in MOV_VIDEO:
         handle_defined(file, folder / "video" / "MOV")
-    for file in parser.MP4_VIDEO:
+    for file in MP4_VIDEO:
         handle_defined(file, folder / "video" / "MP4")
 
-    for file in parser.AMR_AUDIO:
+    for file in AMR_AUDIO:
         handle_defined(file, folder / "audio" / "AMR")
-    for file in parser.MP3_AUDIO:
+    for file in MP3_AUDIO:
         handle_defined(file, folder / "audio" / "MP3")
-    for file in parser.OGG_AUDIO:
+    for file in OGG_AUDIO:
         handle_defined(file, folder / "audio" / "OGG")
-    for file in parser.WAV_AUDIO:
+    for file in WAV_AUDIO:
         handle_defined(file, folder / "audio" / "WAV")
 
-    for file in parser.DOC_DOCUMENTS:
+    for file in DOC_DOCUMENTS:
         handle_defined(file, folder / "documents" / "DOC")
-    for file in parser.DOCX_DOCUMENTS:
+    for file in DOCX_DOCUMENTS:
         handle_defined(file, folder / "documents" / "DOCX")
-    for file in parser.PDF_DOCUMENTS:
+    for file in PDF_DOCUMENTS:
         handle_defined(file, folder / "documents" / "PDF")
-    for file in parser.PPTX_DOCUMENTS:
+    for file in PPTX_DOCUMENTS:
         handle_defined(file, folder / "documents" / "PPTX")
-    for file in parser.TXT_DOCUMENTS:
+    for file in TXT_DOCUMENTS:
         handle_defined(file, folder / "documents" / "TXT")
-    for file in parser.XLS_DOCUMENTS:
+    for file in XLS_DOCUMENTS:
         handle_defined(file, folder / "documents" / "XLS")
-    for file in parser.XLSX_DOCUMENTS:
+    for file in XLSX_DOCUMENTS:
         handle_defined(file, folder / "documents" / "XLSX")
 
-    for file in parser.GZTAR_ARCHIVES:
+    for file in GZTAR_ARCHIVES:
         handle_archive(file, folder / "archives")
-    for file in parser.TAR_ARCHIVES:
+    for file in TAR_ARCHIVES:
         handle_archive(file, folder / "archives")
-    for file in parser.ZIP_ARCHIVES:
+    for file in ZIP_ARCHIVES:
         handle_archive(file, folder / "archives")
 
-    for file in parser.MY_OTHER:
+    for file in MY_OTHER:
         handle_other(file, folder / "MY_OTHER")
 
     # Garbage collector
-    for folder in parser.FOLDERS[::-1]:
+    for folder in FOLDERS[::-1]:
         handle_folder(folder)
 
 
@@ -203,10 +201,10 @@ def main(source_folder):
         print(f"Start in folder: {folder_for_scan.resolve()}")
         files_runner(folder_for_scan.resolve())
     except OSError:
-        print(f"Folder {folder} not found.")
+        print(f"Folder {source_folder} not found.")
         quit()
 
 
 
 if __name__ == "__main__":
-    main()
+    main("Мотлох")
